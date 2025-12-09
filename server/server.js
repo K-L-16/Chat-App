@@ -11,9 +11,13 @@ import { Server } from 'socket.io'
 const app = express()
 const server = http.createServer(app)
 
+//get the frontend url
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN
+
+
 //initialze socket.io server
 export const io = new Server(server, {
-    cors:{origin:"*"}
+    cors: { origin: FRONTEND_ORIGIN }
 })
 
 //store online users
@@ -38,7 +42,7 @@ io.on("connection", (socket) => {
 })
 
 //middleware setup
-app.use(cors());
+app.use(cors({ origin: FRONTEND_ORIGIN }));
 app.use(express.json({ limit: '4mb' }))
 
 
