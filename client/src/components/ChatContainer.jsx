@@ -9,6 +9,8 @@ import { formatMessageTime } from '../lib/utils'
 import { ChatContext } from '../../context/ChatContext'
 import { AuthContext } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
+import { ThemeContext } from '../../context/ThemeContext';
+
 
 
 
@@ -16,13 +18,16 @@ import toast from 'react-hot-toast'
 export default function ChatContainer() {
 
     const { messages, selectedUser, setSelectedUser, sendMessage, getMessages } = useContext(ChatContext)
-    
+
     const { authUser, onlineUsers } = useContext(AuthContext)
 
     const [input, setInput] = useState('')
-    
+
+    const { theme } = useContext(ThemeContext);
+
+
     const scrollEnd = useRef()
-    
+
     //handle sending a message
     const handleSendMessage = async (e) => {
         e.preventDefault;
@@ -62,23 +67,54 @@ export default function ChatContainer() {
 
 
     return selectedUser ? (
-        
-        <div className="h-full bg-white relative overflow-scroll flex flex-col">
+
+        <div
+            className={`h-full relative flex flex-col overflow-scroll ${theme === 'dark'
+                ? 'bg-slate-800 text-slate-100'
+                : 'bg-white text-slate-900'
+                }`}
+        >
+
             {/* //{Headers} */}
-            <div className="flex items-center gap-3 px-5 py-3 border-b border-gray-100 bg-white">
+            <div
+                className={`flex items-center gap-3 px-5 py-3 border-b ${theme === 'dark'
+                    ? 'bg-[#181c31] border-slate-800'
+                    : 'bg-[#f7f7fb] border-gray-100'
+                    }`}
+            >
+
                 <img
                     src={selectedUser?.profilePic || personIcon}
                     alt={selectedUser?.fullName || 'user'}
-                    className="w-8 h-8 rounded-full object-cover"
+                    className={`w-8 h-8 rounded-full object-cover ${theme === 'dark'
+                        ? selectedUser?.profilePic
+                            ? ''
+                            : ''
+                        : selectedUser?.profilePic
+                            ? ''
+                            : 'filter brightness-0'
+                        }`}
                 />
-                <p className="flex-1 text-base font-medium text-slate-900 flex items-center gap-2">
+                <p className={`flex-1 text-base font-medium ${theme === 'dark' ? 'text-white' : 'text-slate-900'}  flex items-center gap-2`}>
                     {selectedUser.fullName}
                     {onlineUsers.includes(selectedUser._id) && (
                         <span className="w-2 h-2 rounded-full bg-green-500" />
                     )}
                 </p>
-                <img src={arrowIcon} alt="" className='md:hidden w-6 cursor-pointer filter brightness-0' onClick={()=>setSelectedUser(null)}/>
-                <img src={helpIcon} alt="" className='max-md:hidden w-4 h-4 opacity-60 filter brightness-0' />
+                <img
+                    src={arrowIcon}
+                    alt=""
+                    className={`md:hidden w-6 cursor-pointer ${theme === 'dark' ? '' : 'filter brightness-0'
+                        }`}
+                    onClick={() => setSelectedUser(null)}
+                />
+
+                <img
+                    src={helpIcon}
+                    alt=""
+                    className={`max-md:hidden w-4 h-4 opacity-70 ${theme === 'dark' ? '' : 'filter brightness-0'
+                        }`}
+                />
 
             </div>
             {/* //chat area  */}
@@ -89,11 +125,11 @@ export default function ChatContainer() {
                             <img
                                 src={msg.image}
                                 alt=""
-                                className="max-w-[260px] rounded-2xl overflow-hidden mb-1 border border-gray-200"
+                                className="max-w-[260px] rounded-2xl overflow-hidden mb-3 border border-gray-200"
                             />
                         ) : (
                             <p
-                                className={`px-3 py-2 max-w-[260px] text-sm rounded-2xl mb-1 break-words
+                                className={`px-3 py-2 max-w-[260px] text-sm rounded-2xl mb-4 break-words
       ${msg.senderId === authUser._id
                                         ? 'bg-violet-500 text-white rounded-br-sm'
                                         : 'bg-gray-100 text-slate-900 rounded-bl-sm'
@@ -104,21 +140,53 @@ export default function ChatContainer() {
                         )}
 
                         <div className='text-center text-xs'>
-                            <img src={msg.senderId === authUser._id ? authUser?.profilePic || personIcon : selectedUser?.profilePic || personIcon} alt="" className='w-7 h-7 rounded-full object-cover' />
+                            <img
+                                src={
+                                    msg.senderId === authUser._id
+                                        ? authUser?.profilePic || personIcon
+                                        : selectedUser?.profilePic || personIcon
+                                }
+                                alt=""
+                                className={`
+            w-7 h-7 rounded-full object-cover
+            ${(() => {
+                                        const avatar =
+                                            msg.senderId === authUser._id
+                                                ? authUser?.profilePic
+                                                : selectedUser?.profilePic;
+
+                                        if (avatar) return "";
+                                        return theme === "dark" ? "" : "filter brightness-0";
+                                    })()}
+        `}
+                            />
                             <p className='text-gray-500'>{formatMessageTime(msg.createdAt)}</p>
                         </div>
 
+
                     </div>
                 ))}
-                
+
                 <div ref={scrollEnd}></div>
 
             </div>
             {/* text area  */}
-            <div className="  sticky bottom-0  left-0 right-0 px-4 py-3 border-t border-gray-100 bg-[#fafafa]">
-                <div className="flex items-center gap-3 bg-white rounded-full px-4 py-2 border border-gray-200 shadow-sm">
+            <div
+                className={`sticky bottom-0 left-0 right-0 px-4 py-3 border-t ${theme === 'dark'
+                    ? 'border-slate-800 bg-slate-800'
+                    : 'border-gray-100 bg-[#fafafa]'
+                    }`}
+            >
+
+                <div
+                    className={`flex items-center gap-3 rounded-full px-4 py-2 border shadow-sm ${theme === 'dark'
+                        ? 'bg-slate-900 border-slate-700 shadow-none'
+                        : 'bg-white border-gray-200'
+                        }`}
+                >
+
                     <label htmlFor="image" className="cursor-pointer">
-                        <img src={galleryIcon} alt="" className="w-5 opacity-70 filter brightness-0" />
+                        <img src={galleryIcon} alt="" className={`w-5 opacity-70  ${theme === 'dark' ? '' : 'filter brightness-0'}`} />
                     </label>
                     <input
                         id="image"
@@ -130,22 +198,34 @@ export default function ChatContainer() {
                     <input
                         onChange={(e) => setInput(e.target.value)}
                         value={input}
-                        onKeyDown={(e)=>e.key==="Enter" ? handleSendMessage(e) : null}
+                        onKeyDown={(e) => e.key === "Enter" ? handleSendMessage(e) : null}
                         type="text"
                         placeholder="Type a message..."
-                        className="flex-1 bg-transparent border-none outline-none text-sm text-slate-900 placeholder-gray-400"
+                        className={`flex-1 bg-transparent border-none outline-none text-sm placeholder-gray-400 ${theme === 'dark' ? 'text-gray-300' : ' text-slate-900 '}`}
                     />
-                    <img onClick={handleSendMessage} src={sendIcon} alt="" className="w-6 cursor-pointer opacity-80 filter brightness-0" />
+                    <img onClick={handleSendMessage} src={sendIcon} alt="" className={`w-6 cursor-pointer  ${theme === 'dark' ? '' : 'opacity-80 filter brightness-0'}`} />
                 </div>
             </div>
 
         </div>
 
-        
+
     ) : (
-            <div className='flex flex-col items-center justify-center gap-2 text-gray-500 bg-white/10 max-md:hidden'>
-                <img src={logo} alt="" className='max-w-16 filter brightness-0 opacity-80' />
-                <p className='text-lg font-medium text-gray-400'>Chat anytime, anywhere</p>
-            </div>
+        <div
+            className={`flex flex-col items-center justify-center gap-2 max-md:hidden ${theme === 'dark'
+                ? 'bg-[#181c31] text-slate-400'
+                : 'bg-white/10 text-gray-500'
+                }`}
+        >
+
+            <img
+                src={logo}
+                alt=""
+                className={`max-w-16 opacity-80 ${theme === 'dark' ? '' : 'filter brightness-0'
+                    }`}
+            />
+
+            <p className='text-lg font-medium text-gray-400'>Chat anytime, anywhere</p>
+        </div>
     )
 }

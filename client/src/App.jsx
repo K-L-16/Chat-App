@@ -5,11 +5,23 @@ import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import {Toaster} from "react-hot-toast"
 import { AuthContext } from '../context/AuthContext'
+import { ThemeContext } from '../context/ThemeContext';
+
 
 const App = () => {
-  const {authUser} = useContext(AuthContext)
+
+  const { authUser } = useContext(AuthContext)
+    const { theme } = useContext(ThemeContext);
+
   return (
-    <div className='min-h-screen bg-white text-black'>
+    <div
+      className={
+        theme === 'dark'
+          ? 'min-h-screen bg-slate-950 text-slate-100'
+          : 'min-h-screen bg-white text-black'
+      }
+    >
+
       <Toaster/>
       <Routes>
         <Route path='/' element={authUser ? <HomePage /> :<Navigate to="/login"/>} />

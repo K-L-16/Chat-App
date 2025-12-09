@@ -4,13 +4,17 @@ import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from '../context/AuthContext.jsx'
 import { ChatProvider } from '../context/ChatContext.jsx'
+import { ThemeProvider } from '../context/ThemeContext.jsx';
+
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <AuthProvider>
-      <ChatProvider>
-        <App />
-      </ChatProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ChatProvider>
+          <App />
+        </ChatProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </BrowserRouter>,
 )
