@@ -16,29 +16,29 @@ export default function Sidebar() {
     const { getUsers, users, selectedUser, setSelectedUser, unseenMessages, setunseenMessages } = useContext(ChatContext)
 
     const { logout, onlineUsers } = useContext(AuthContext)
-    
+
     const [input, setInput] = useState(false)
 
     const filteredUsers = input ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase())) : users
-    
+
     const { theme, toggleTheme } = useContext(ThemeContext);
 
-    
+
     const navigate = useNavigate();
 
     useEffect(() => {
         getUsers();
-    },[onlineUsers])
+    }, [onlineUsers])
 
     return (
         <div
-            className={`h-full p-5 flex flex-col gap-4 border-r ${theme === 'dark'
-                    ? 'bg-[#404560] border-slate-800 text-slate-100'
-                    : 'bg-[#efefef] border-gray-100 text-slate-900'
+            className={`h-full p-5 flex flex-col gap-4 border-r overflow-hidden ${theme === 'dark'
+                ? 'bg-[#404560] border-slate-800 text-slate-100'
+                : 'bg-[#efefef] border-gray-100 text-slate-900'
                 } ${selectedUser ? 'max-md:hidden' : ''}`}
-          
-          >
-            
+        >
+
+
             <div className="pd-5">
                 <div className="flex justify-between items-center">
                     <img src={logo} alt="logo" className={`max-w-40 ${theme === 'dark' ? '' : 'filter brightness-0'}`} />
@@ -56,7 +56,7 @@ export default function Sidebar() {
                         </button>
 
 
-                    <div className="relative py-2 group">
+                        <div className="relative py-2 group">
                             <img
                                 src={menuIcon}
                                 alt="Menu"
@@ -64,7 +64,7 @@ export default function Sidebar() {
                                     }`}
                             />
 
-<div
+                            <div
                                 className={`absolute top-full right-0 z-20 w-32 p-5 rounded-md border text-sm
     ${theme === 'dark'
                                         ? 'bg-slate-900 border-slate-700 text-slate-100'
@@ -72,13 +72,13 @@ export default function Sidebar() {
                                     } hidden group-hover:block`}
                             >
 
-                            <p className='cursor-pointer' onClick={()=>navigate('/profile')}>Edit Profile</p>
-                            <hr className='my-2 border-t border-t-gray-500' />
-                            <p className='cursor-pointer text-sm text-red-600' onClick={()=>logout()}>LogOut</p>
+                                <p className='cursor-pointer' onClick={() => navigate('/profile')}>Edit Profile</p>
+                                <hr className='my-2 border-t border-t-gray-500' />
+                                <p className='cursor-pointer text-sm text-red-600' onClick={() => logout()}>LogOut</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
                 <div
                     className={`rounded-full flex items-center gap-2 py-2.5 px-4 mt-5 border
@@ -108,7 +108,7 @@ export default function Sidebar() {
 
             </div>
 
-            <div className='flex flex-col mt-4 gap-1'>
+            <div className="flex-1 mt-4 overflow-y-auto pr-1 flex flex-col gap-1">
                 {filteredUsers.map((user, index) => (
                     <div
                         onClick={() => { setSelectedUser(user); setunseenMessages(prev => ({ ...prev, [user._id]: 0 })) }}
@@ -123,23 +123,23 @@ export default function Sidebar() {
                                     ? 'bg-blue-200'
                                     : 'bg-white hover:bg-blue-100'
                             }`}
-                          
-                          
-                          
+
+
+
                     >
-                  
+
                         <img
                             src={user?.profilePic || personIcon}
                             alt={user.fullName}
                             className={`w-10 h-10 rounded-full object-cover ring-1 ring-gray-200 
-                                ${theme === 'dark' 
+                                ${theme === 'dark'
                                     ? user?.profilePic
                                         ? ''
                                         : ''
-                                : user?.profilePic
-                                    ? ''
-                                    :'filter brightness-0'
-                            }`}
+                                    : user?.profilePic
+                                        ? ''
+                                        : 'filter brightness-0'
+                                }`}
                         />
                         <div className='flex flex-col leading-5'>
                             <p>{user.fullName}</p>
